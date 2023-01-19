@@ -1,0 +1,50 @@
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-kapt'
+
+android {
+    compileSdk ProjectConfig.compileSdk
+
+    defaultConfig {
+        minSdk ProjectConfig.minSdk
+        targetSdk ProjectConfig.targetSdk
+        versionCode ProjectConfig.versionCode
+        versionName ProjectConfig.versionName
+
+        testInstrumentationRunner ProjectConfig.testInstrumentationRunner
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    kotlinOptions {
+        jvmTarget = '1.8'
+        freeCompilerArgs = ["-Xcontext-receivers"]
+    }
+}
+
+tasks.getByPath("preBuild").dependsOn("ktlintFormat")
+
+dependencies {
+    implementation AndroidX.coreKtx
+
+    implementation DaggerHilt.hiltAndroid
+    kapt DaggerHilt.hiltCompiler
+
+    implementation Logcat.core
+
+    implementation platform(Arrow.bom)
+    implementation Arrow.core
+    implementation Arrow.fxCoroutines
+    implementation Arrow.fxStm
+    implementation Arrow.optics
+}
